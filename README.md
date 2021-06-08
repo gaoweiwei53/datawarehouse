@@ -29,10 +29,10 @@
 
 用户行为数据通过java代码模拟生成，使用的json格式，分为连个json对象。
 ## 4. 数仓建模
-|||
-|-|-|
-|ODS  (Operation DataStore) 数据原始层|存放原始数据|
-|DWD  (Data warehouse Detail) 明细数据层|对ODS层数据进行清洗等，保存明细数据|
-|DWS  (Data warehouse service) 服务数据层|以DWD为基础，按天进行汇总|
-|DWT  (Data Warehouse Topic) 主题层|以DWS层为基础，对数据进行累积汇总|
-|AD  S(Application Data Store) 应用层|ADS层为各种统计报表提供数据|
+||||
+|-|-|-|
+|ODS|Operation DataStore 数据原始层|存放原始数据|
+|DWD|Data warehouse Detail 明细数据层|对ODS层数据进行清洗等，保存明细数据|
+|DWS|Data warehouse service 服务数据层|以DWD为基础，按天进行汇总|
+|DWT|Data Warehouse Topic 主题层|以DWS层为基础，对数据进行累积汇总|
+|ADS|Application Data Store 应用层|ADS层为各种统计报表提供数据|
