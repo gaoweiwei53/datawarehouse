@@ -29,7 +29,7 @@
 
 用户行为数据通过java代码模拟生成，使用的json格式，分为连个json对象。
 ## 4. 数仓建模
-||||
+|||功能|
 |-|-|-|
 |ODS|Operation DataStore 数据原始层|存放原始数据|
 |DWD|Data warehouse Detail 明细数据层|对ODS层数据进行清洗等，保存明细数据|
