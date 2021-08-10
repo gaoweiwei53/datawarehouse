@@ -27,6 +27,7 @@
 - 错误数据：记录应用使用过程中的错误信息，包括错误编号及错误信息
 
 用户行为数据通过java代码模拟生成，使用的json格式，分为两个json对象。
+
 # 4. 数仓
 ## 数据仓库分层
 |||功能|
@@ -73,6 +74,43 @@ DWS层和DWT层统称宽表层。
 DWS层、DWT层和ADS层都是以需求为驱动，和维度建模已经没有关系了。
 
 DWS和DWT都是建宽表，按照主题去建表。
+# 项目经验
+#### 1. HDFS多级目录存储
+HDFS的DataNode节点保存数据的路径由dfs.datanode.data.dir参数决定，其默认值为file://${hadoop.tmp.dir}/dfs/data，若服务器有多个磁盘，必须对该参数进行修改
+#### 2. 集群数据均衡
+-节点间数据均衡  
+开启数据均衡命令：`start-balancer.sh -threshold 10`代表的是集群中各个节点的磁盘空间利用率相差不超过10%，可根据实际情况进行调整
+- 磁盘间数据均衡
+    - 生成均衡计划 `hdfs diskbalancer -plan hadoop103`
+    - 执行均衡计划 `hdfs diskbalancer -execute hadoop103.plan.json`
+    - 取消均衡计划 `hdfs diskbalancer -cancel hadoop103.plan.json`
+
+#### 3. LZO压缩
+#### 4. hadoop参数调优
+- HDFS参数调优hdfs-site.xml  
+NameNode有一个工作线程池，用来处理不同DataNode的并发心跳以及客户端并发的元数据操作。
+对于大集群或者有大量客户端的集群来说，通常需要增大参数dfs.namenode.handler.count的默认值10。
+- Yarn参数调优 yarn-site.xml
+
+#### 5. Flume组件选择
+##### 5.1 采集flume
+- Source 
+    - TailDir Source：支持断点续传、多目录
+    - Exec Source：Flume不运行时数据会丢失
+    - Spooling Directory Source
+
+- Channel    
+采用Kafka Channel，省去了Sink，提高了效率。KafkaChannel数据存储在Kafka里面，所以数据是存储在磁盘中
+
+##### 5.2 消费kafka flume
+- Channel
+    - FileChannel
+    - MemoryChannel
+
+- sink  
+hdfs小文件处理：`hdfs.rollInterval=3600，hdfs.rollSize=134217728，hdfs.rollCount =0`文件在达到128M时会滚动生成新文件.文件创建超3600秒时会滚动生成新文件
+#### Flume内存优化
+在conf/flume-env.sh中将-Xms和-Xmx参数增大
 # 监控工具 Zabbix
 ## 架构
 ## 术语
@@ -88,3 +126,4 @@ DWS和DWT都是建宽表，按照主题去建表。
 4. 创建Action：选择**管理** -> **报警媒介类型**，填写邮箱信息。再选择**配置**->**动作**
 ## 模板
 可为相同的配置设置模板
+
