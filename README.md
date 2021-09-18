@@ -43,6 +43,26 @@
 |DWS|Data warehouse service 服务数据层|以DWD为基础，按天进行汇总|
 |DWT|Data Warehouse Topic 主题层|以DWS层为基础，对数据进行累积汇总|
 |ADS|Application Data Store 应用层|ADS层为各种统计报表提供数据|
+- ODS: 
+    - 日志数据：ods_log
+    - 业务数据： ods_order_info，ods_order_detail，ods_sku_info，ods_user_info，ods_base_category1，ods_base_category2，ods_base_category3，ods_payment_info，ods_base_province，ods_base_region，ods_base_trademark，ods_order_status_log, ...
+- DWD：
+    - 日志数据：dwd_start_log, dwd_page_log，dwd_action_log，dwd_display_log，dwd_error_log
+    - 业务数据：dwd_dim_sku_info，dwd_dim_coupon_info，dwd_dim_activity_info，dwd_dim_base_province
+- DWS：
+    - 每日设备行为：dws_uv_detail_daycount
+    - 每日会员行为：dws_user_action_daycount
+    - 每日商品行为：dws_sku_action_daycount
+    - 每日活动统计：dws_activity_info_daycount
+- DWT：
+    - 设备主题宽表：dwt_uv_topic
+    - 会员主题宽表：dwt_user_topic
+    - 商品主题宽表：dwt_sku_topic
+- ADS：
+    - 设备主题：活跃设备数、留存率...
+    - 会员主题：会员信息 ads_user_topic ...
+    - 商品主题：商品销量排行：ads_product_sale_topN ...
+
 ## 维度建模
 维度建模通常以一个事实表为中心进行表的组织，把相关各种表整理成两种：**事实表**和**维度表**两种
 ### 事实表和维度表
