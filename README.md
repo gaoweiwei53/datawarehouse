@@ -29,11 +29,12 @@
 - 用户行为日志数据通过flume -> kafka -> flume导入HDFS的topic_log目录下，然后使用`load data inpath * into table *`导入到ods层的一张表中
 - 业务数据通过sqoop从mysql导入到hdfs的ods层的各张表中
 #### 同步策略
-- 全量表：存储完整数据，适用于数据量不大，每天既有新增也有修改的场景，如品牌表，活动表，优惠券表
-- 增量表：存储新增加的数据，适用于数据量大，每天只会有新增的场景，如订单表，支付表，评论表
-- 新增及变化表：存储增加和变化的数据
+- 全量同步：每次将mysql整张表同步到Hive中，适用于数据量不大，每天既有新增也有修改的场景，如品牌表，活动表，优惠券表
+- 增量表：每次将新增的数据日期同步到hive对应的分区中。适用于数据量大，每天只会有新增的场景，如订单表，支付表，评论表
+- 新增及变化表：将mysql中增加和变化的数据同步到Hive中，DWD层通过拉链表完成
 - 特殊表：只需存储一次，省份和地区表
 
+在用Sqoop将mysql中的数据导入Hive的过程中，不同的同步的策略是通过导入语句的'where'子句做到的，例如全量同步则where子句不加任何筛选条件，增量同步则表中的时间字段筛选(创建时间、支付时间等)，新增及变化同步通过表中的**创建时间**+**修改时间**筛选的。
 # 4. 数仓
 ## 数据仓库分层
 |||功能|
@@ -46,9 +47,9 @@
 - ODS: 
     - 日志数据：ods_log
     - 业务数据： ods_order_info，ods_order_detail，ods_sku_info，ods_user_info，ods_base_category1，ods_base_category2，ods_base_category3，ods_payment_info，ods_base_province，ods_base_region，ods_base_trademark，ods_order_status_log, ...
-- DWD：对用户行为日志解析, 数据判空，对业务数据采用维度模型重新建模
+- DWD：对用户行为日志解析, 数据判空，对业务数据采用维度模型重新建模 8张事实6张维度
     - 日志数据：dwd_start_log, dwd_page_log，dwd_action_log，dwd_display_log，dwd_error_log
-    - 业务数据：dwd_dim_sku_info，dwd_dim_coupon_info，dwd_dim_activity_info，dwd_dim_base_province
+    - 业务数据：dwd_dim_sku_info(`join`)，dwd_dim_coupon_info，dwd_dim_activity_info，dwd_dim_base_province,dwd_fact_payment_info(增量同步)
 - DWS：存放的所有主题对象当天的汇总行为
     - 每日设备行为：dws_uv_detail_daycount
     - 每日会员行为：dws_user_action_daycount
