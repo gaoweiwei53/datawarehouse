@@ -52,13 +52,20 @@
     - 业务数据：dwd_dim_sku_info(`join`)，dwd_dim_coupon_info，dwd_dim_activity_info，dwd_dim_base_province,dwd_fact_payment_info(增量同步)
 - DWS：存放的所有主题对象当天的汇总行为
     - 每日设备行为：dws_uv_detail_daycount
+        - 活跃次数、页面访问统计
     - 每日会员行为：dws_user_action_daycount
+        - 登录次数、加入购物车次数、下单次数等
     - 每日商品行为：dws_sku_action_daycount
+        - 被下单次数、被退款次数、被加入购物车次数等
     - 每日活动统计：dws_activity_info_daycount
+        - 活动名称、下单次数 
 - DWT：存放的是所有主题对象的累积行为
     - 设备主题宽表：dwt_uv_topic
+        - 设备id、品牌、首次活跃时间等
     - 会员主题宽表：dwt_user_topic
+        - 用户id、首次登录时间、最近下单时间
     - 商品主题宽表：dwt_sku_topic
+        - 商品id、最近30天被下单次数等
 - ADS：
     - 设备主题：活跃设备数、留存率...
     - 会员主题：会员信息 ads_user_topic ...
